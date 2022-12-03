@@ -1,0 +1,45 @@
+name: Run Lint, Vet and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint_vet_test_main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19.3
+      
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Run vet
+        run: go vet ./...
+
+      - name: Install StaticCheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run StaticCheck
+        run: staticcheck ./...
+
+      - name: Install GoLint
+        run: go install golang.org/x/lint/golint@latest
+
+      - name: Run Golint
+        run: golint ./...
+
+      - name: Run test
+        run: go test -race -vet=off ./...
+
+      
