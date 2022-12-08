@@ -3,13 +3,13 @@ package config
 import "testing"
 
 func TestGetConfig(t *testing.T) {
-	portWanted := 8080
+	portWanted := "8080"
 
-	Init("local.yaml")
+	Init("local")
 	config := GetConfig()
-	portActual := config.GetInt("port")
+	portActual := config.GetString("port")
 
 	if portActual != portWanted {
-		t.Errorf("GetConfig(), property port value wrong = %d, want %d", portActual, portWanted)
+		t.Errorf("GetConfig(), property port value wrong = %q, want %q", portActual, portWanted)
 	}
 }

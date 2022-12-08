@@ -13,6 +13,7 @@ func Init(env string) {
 	config.SetConfigType("yaml")
 	config.SetConfigName(env)
 	config.AddConfigPath(".")
+	config.AddConfigPath("config/")
 
 	if err := config.ReadInConfig(); err != nil {
 		log.Fatalf("error on parsing configuration file. %v", err)
