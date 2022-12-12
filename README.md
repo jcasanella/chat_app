@@ -24,3 +24,9 @@ TBD
 . Basic github actions => Testing, Lint and Vet 
 . Enable test coverage using CodeCov as part of the Github Actions
 
+[09/12/2022]
+. First Golang router => Created only for testing purposes
+
+[11/12/2022]
+. Improve Dockerfile with multistages and non root user
+
