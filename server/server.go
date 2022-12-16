@@ -2,10 +2,10 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jcasanella/chat_app/config"
+	"github.com/jcasanella/chat_app/controller"
 )
 
 func NewRouter() *gin.Engine {
@@ -13,9 +13,14 @@ func NewRouter() *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	})
+	v1 := router.Group("v1")
+	{
+		login := v1.Group("login")
+		{
+			lc := new(controller.LoginController)
+			login.GET("/", lc.Status)
+		}
+	}
 
 	return router
 }
