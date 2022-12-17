@@ -1,4 +1,4 @@
-name: Run Lint, Vet and Test
+name: Build and Test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint_vet_test_main:
+  build_test_main:
     runs-on: ubuntu-latest
 
     steps:
