@@ -30,3 +30,6 @@ TBD
 [11/12/2022]
 . Improve Dockerfile with multistages and non root user
 
+[18/12/2022]
+. Github action to push docker image into ECS
+
