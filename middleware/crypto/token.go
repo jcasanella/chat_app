@@ -10,7 +10,7 @@ import (
 // Will return an error, if can not be generated
 func GenerateRandomString(n int) (string, error) {
 	if n <= 0 {
-		return "", errors.New("Invalid length")
+		return "", errors.New("invalid length")
 	}
 
 	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
