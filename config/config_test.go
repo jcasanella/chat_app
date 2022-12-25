@@ -2,7 +2,7 @@ package config
 
 import "testing"
 
-func TestGetConfig(t *testing.T) {
+func TestGetConfigValid(t *testing.T) {
 	portWanted := "8080"
 
 	Init("local")
