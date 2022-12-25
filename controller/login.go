@@ -4,15 +4,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jcasanella/chat_app/model"
 )
 
 type LoginController struct{}
 
-func (lc LoginController) Status(c *gin.Context) {
-	var user model.User
-	c.Bind(&user)
-	if user.Name != "" && user.Password != "" {
+func (lc LoginController) Login(c *gin.Context) {
+	n := c.Query("name")
+	p := c.Query("password")
+	if n != "" && p != "" {
 		c.String(http.StatusOK, "Valid user")
 	} else {
 		c.String(http.StatusBadRequest, "Invalid user")
