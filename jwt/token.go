@@ -1,10 +1,21 @@
-package crypto
+package jwt
 
 import (
 	"crypto/rand"
 	"errors"
+	"log"
 	"math/big"
 )
+
+var Token string
+
+func Init(n int) {
+	var err error
+	Token, err = GenerateRandomString(64)
+	if err != nil {
+		log.Fatalf("error generateRandomString. %v", err)
+	}
+}
 
 // Generate a securely random string
 // Will return an error, if can not be generated
