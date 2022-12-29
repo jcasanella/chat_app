@@ -38,25 +38,21 @@ func GenerateRandomString(n int) (string, error) {
 	return string(ret), nil
 }
 
-func GenerateJWT(username string) (string, error) {
+func GenerateJWT(username string) (tokenString string, err error) {
 	claims := model.UserClaims{
 		Name: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
 			Issuer:    "Chat App",
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(SecretKey))
-	if err != nil {
-		return "Signing Error", err
-	}
-
-	return tokenString, nil
+	tokenString, err = token.SignedString([]byte(SecretKey))
+	return
 }
 
-// func ParseTokenJWT(token string) erro {
-// 	t, err := jwt.Parse(token, func(token *jwt.Tok en)(interface{}, error) {
+// func ValidateTokenJWT(signedToken string) error {
+// 	t, err := jwt.ParseWithClaims(token, func(token *jwt.Token)(interface{}, error) {
 // 		if _, ok := token.Method.(*jwt.SigninMethodHMAC); !ok {
 // 			return fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 // 		}

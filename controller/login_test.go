@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +36,7 @@ func mockGetJson(c *gin.Context, params gin.Params, u url.Values) {
 }
 
 func TestValidLogin(t *testing.T) {
-	expected := "Valid user"
+	expected := `{"token":`
 
 	lc := new(LoginController)
 	w := httptest.NewRecorder()
@@ -51,8 +52,9 @@ func TestValidLogin(t *testing.T) {
 	lc.Login(c)
 
 	resp, _ := io.ReadAll(w.Body)
-	if string(resp) != expected {
-		t.Errorf("Login() --> Actual response: %s Expected response: %s", string(resp), expected)
+	actual := string(resp)
+	if !strings.Contains(actual, expected) {
+		t.Errorf("Login() --> Actual response: %s does not contain Expected response: %s", actual, expected)
 	}
 	if w.Code != http.StatusOK {
 		t.Errorf("Login() --> Actual status code: %v Expected status code: %v", w.Code, http.StatusOK)
@@ -77,7 +79,7 @@ func createUrlValues() []url.Values {
 }
 
 func TestInvalidLogin(t *testing.T) {
-	expected := "Invalid user"
+	expected := `{"error":"Invalid user"}`
 
 	for _, v := range createUrlValues() {
 		lc := new(LoginController)
