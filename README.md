@@ -33,3 +33,6 @@ TBD
 [18/12/2022]
 . Github action to push docker image into ECS
 
+[29/12/2022]
+. Create JWT
+
