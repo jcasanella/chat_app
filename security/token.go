@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/jcasanella/chat_app/model"
 )
 
@@ -41,7 +41,7 @@ func GenerateRandomString(n int) (string, error) {
 func GenerateJWT(username string) (string, error) {
 	claims := model.UserClaims{
 		Name: username,
-		StandardClaims: jwt.StandardClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
 			Issuer:    "Chat App",
 		},
