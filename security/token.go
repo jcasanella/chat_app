@@ -40,11 +40,9 @@ func GenerateRandomString(n int) (string, error) {
 
 func GenerateJWT(username string) (string, error) {
 	claims := model.UserClaims{
-		username,
-		true,
-		time.Now().Add(10 * time.Minute),
-		jwt.StandardClaims{
-			ExpiresAt: 15000,
+		Name: username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
 			Issuer:    "Chat App",
 		},
 	}
@@ -56,3 +54,13 @@ func GenerateJWT(username string) (string, error) {
 
 	return tokenString, nil
 }
+
+// func ParseTokenJWT(token string) erro {
+// 	t, err := jwt.Parse(token, func(token *jwt.Tok en)(interface{}, error) {
+// 		if _, ok := token.Method.(*jwt.SigninMethodHMAC); !ok {
+// 			return fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+// 		}
+
+// 		return nil
+// 	})
+// }
