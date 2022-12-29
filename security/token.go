@@ -1,17 +1,21 @@
-package jwt
+package security
 
 import (
 	"crypto/rand"
 	"errors"
 	"log"
 	"math/big"
+	"time"
+
+	"github.com/golang-jwt/jwt"
+	"github.com/jcasanella/chat_app/model"
 )
 
-var Token string
+var SecretKey string
 
 func Init(n int) {
 	var err error
-	Token, err = GenerateRandomString(64)
+	SecretKey, err = GenerateRandomString(64)
 	if err != nil {
 		log.Fatalf("error generateRandomString. %v", err)
 	}
@@ -32,4 +36,23 @@ func GenerateRandomString(n int) (string, error) {
 	}
 
 	return string(ret), nil
+}
+
+func GenerateJWT(username string) (string, error) {
+	claims := model.UserClaims{
+		username,
+		true,
+		time.Now().Add(10 * time.Minute),
+		jwt.StandardClaims{
+			ExpiresAt: 15000,
+			Issuer:    "Chat App",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(SecretKey))
+	if err != nil {
+		return "Signing Error", err
+	}
+
+	return tokenString, nil
 }

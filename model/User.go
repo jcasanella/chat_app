@@ -1,6 +1,15 @@
 package model
 
-type User struct {
-	Name     string `form:"name"`
-	Password string `form:"password"`
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt"
+)
+
+type UserClaims struct {
+	Name       string `json:"name"`
+	Authorized bool   `json:"authorized"`
+	Exp        time.Time   `json:"exp"`
+	jwt.StandardClaims
 }
+
