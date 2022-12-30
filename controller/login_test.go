@@ -26,7 +26,7 @@ func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
 	return ctx
 }
 
-func mockGetJson(c *gin.Context, params gin.Params, u url.Values) {
+func mockGetJSON(c *gin.Context, params gin.Params, u url.Values) {
 	c.Request.Method = "GET"
 	c.Request.Header.Set("Content-Type", "text/plain")
 
@@ -47,7 +47,7 @@ func TestValidLogin(t *testing.T) {
 	values.Add("name", "user1")
 	values.Add("password", "pass1")
 
-	mockGetJson(c, nil, values)
+	mockGetJSON(c, nil, values)
 
 	lc.Login(c)
 
@@ -61,7 +61,7 @@ func TestValidLogin(t *testing.T) {
 	}
 }
 
-func createUrlValues() []url.Values {
+func createURLValues() []url.Values {
 	// Wrong args
 	values := url.Values{}
 	values.Add("wrongName", "wrong")
@@ -81,13 +81,13 @@ func createUrlValues() []url.Values {
 func TestInvalidLogin(t *testing.T) {
 	expected := `{"error":"Invalid user"}`
 
-	for _, v := range createUrlValues() {
+	for _, v := range createURLValues() {
 		lc := new(LoginController)
 		w := httptest.NewRecorder()
 
 		c := getTestContext(w)
 
-		mockGetJson(c, nil, v)
+		mockGetJSON(c, nil, v)
 
 		lc.Login(c)
 
