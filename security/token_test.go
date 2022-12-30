@@ -1,7 +1,9 @@
 package security
 
 import (
+	b64 "encoding/base64"
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -35,4 +37,30 @@ func TestGenerateRandomString(t *testing.T) {
 			t.Errorf("GenerateRandomString() --> Should return empty string if length is <=0. Actual: %v", str)
 		}
 	}
+}
+
+func TestGenerateJWT(t *testing.T) {
+	token, _ := GenerateJWT("test")
+	tokenParts := strings.Split(token, ".")
+	if len(tokenParts) != 3 {
+		t.Errorf("GenerateJWT() --> Token should have 3 parts and has only %d\n", len(tokenParts))
+	}
+
+	// Test header
+	a, _ := b64.StdEncoding.DecodeString(tokenParts[0])
+	actualHeader := string(a)
+	expectedHeader := `{"alg":"HS256","typ":"JWT"}`
+	if actualHeader != expectedHeader {
+		t.Errorf("GenerateJWT() --> Header actual: %s Header expected: %s", actualHeader, expectedHeader)
+	}
+
+	// Test Payload
+	a, _ = b64.StdEncoding.DecodeString(tokenParts[1])
+	actualPayload := string(a)
+	expectedPayload := `{"name":"test","iss":"Chat App","exp":`
+	if !strings.Contains(actualPayload, expectedPayload) {
+		t.Errorf("GenerateJWT() --> Payload actual: %s Payload expected: %s", actualPayload, expectedPayload)
+	}
+
+	// TODO - test sign
 }
