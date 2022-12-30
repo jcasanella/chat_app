@@ -2,10 +2,19 @@ package security
 
 import (
 	b64 "encoding/base64"
-	"fmt"
 	"strings"
 	"testing"
 )
+
+func TestInit(t *testing.T) {
+	lengths := []int{1, 1, 4, 5, 16, 32, 32, 64}
+	for _, v := range lengths {
+		Init(v)
+		if len(SecretKey) != v {
+			t.Errorf("Init() --> length of secret key wrong: %d Expected: %d", len(SecretKey), v)
+		}
+	}
+}
 
 func TestGenerateRandomString(t *testing.T) {
 	lengths := []int{1, 1, 4, 5, 16, 32, 32, 64}
@@ -13,7 +22,6 @@ func TestGenerateRandomString(t *testing.T) {
 		if str, err := GenerateRandomString(v); err != nil {
 			t.Errorf("GenerateRandomString() --> %v", err)
 		} else {
-			fmt.Println(str)
 			l := len([]rune(str))
 			if l != v {
 				t.Errorf("GenerateRandomString() --> Length Expected: %d Actual: %d", v, l)

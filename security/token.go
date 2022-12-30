@@ -15,7 +15,7 @@ var SecretKey string
 
 func Init(n int) {
 	var err error
-	SecretKey, err = GenerateRandomString(64)
+	SecretKey, err = GenerateRandomString(n)
 	if err != nil {
 		log.Fatalf("error generateRandomString. %v", err)
 	}
