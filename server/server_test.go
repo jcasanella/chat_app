@@ -4,7 +4,6 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 )
 
@@ -26,13 +25,13 @@ func TestLoginInvalid(t *testing.T) {
 	}
 }
 
-func getUserPayload() string {
-	params := url.Values{}
-	params.Add("name", "u1")
-	params.Add("password", "p1")
+// func getUserPayload() string {
+// 	params := url.Values{}
+// 	params.Add("name", "u1")
+// 	params.Add("password", "p1")
 
-	return params.Encode()
-}
+// 	return params.Encode()
+// }
 
 func TestLoginValid(t *testing.T) {
 	// TODO
