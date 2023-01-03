@@ -15,11 +15,8 @@ func NewRouter() *gin.Engine {
 
 	v1 := router.Group("v1")
 	{
-		login := v1.Group("login")
-		{
-			lc := new(controller.LoginController)
-			login.GET("/", lc.Login)
-		}
+		lc := new(controller.LoginController)
+		v1.GET("login", lc.Login)
 	}
 
 	return router

@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -26,13 +28,12 @@ func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
 	return ctx
 }
 
-func mockGetJSON(c *gin.Context, params gin.Params, u url.Values) {
+func mockGetJSON(c *gin.Context, user UserTest) {
 	c.Request.Method = "GET"
-	c.Request.Header.Set("Content-Type", "text/plain")
+	c.Request.Header.Set("Content-Type", "application/json")
 
-	c.Params = params
-
-	c.Request.URL.RawQuery = u.Encode()
+	b, _ := json.Marshal(user)
+	c.Request.Body = io.NopCloser(bytes.NewBuffer(b))
 }
 
 func TestValidLogin(t *testing.T) {
@@ -43,11 +44,8 @@ func TestValidLogin(t *testing.T) {
 
 	c := getTestContext(w)
 
-	values := url.Values{}
-	values.Add("name", "user1")
-	values.Add("password", "pass1")
-
-	mockGetJSON(c, nil, values)
+	user := &UserTest{Name: "Frank", Password: "p1"}
+	mockGetJSON(c, *user)
 
 	lc.Login(c)
 
@@ -61,21 +59,17 @@ func TestValidLogin(t *testing.T) {
 	}
 }
 
-func createURLValues() []url.Values {
+func createURLValues() []UserTest {
 	// Wrong args
-	values := url.Values{}
-	values.Add("wrongName", "wrong")
-	values.Add("wrongPassword", "wrong")
+	values1 := &UserTest{}
 
 	// Only name
-	values2 := url.Values{}
-	values2.Add("name", "peter")
+	values2 := &UserTest{Name: "peter"}
 
 	// Only password
-	values3 := url.Values{}
-	values3.Add("password", "pass")
+	values3 := &UserTest{Password: "pass"}
 
-	return []url.Values{values, values2, values3}
+	return []UserTest{*values1, *values2, *values3}
 }
 
 func TestInvalidLogin(t *testing.T) {
@@ -87,7 +81,7 @@ func TestInvalidLogin(t *testing.T) {
 
 		c := getTestContext(w)
 
-		mockGetJSON(c, nil, v)
+		mockGetJSON(c, v)
 
 		lc.Login(c)
 
