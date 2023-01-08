@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jcasanella/chat_app/model"
 )
 
 func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
@@ -28,7 +29,7 @@ func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
 	return ctx
 }
 
-func mockGetJSON(c *gin.Context, user UserTest) {
+func mockGetJSON(c *gin.Context, user model.User) {
 	c.Request.Method = "GET"
 	c.Request.Header.Set("Content-Type", "application/json")
 
@@ -44,7 +45,7 @@ func TestValidLogin(t *testing.T) {
 
 	c := getTestContext(w)
 
-	user := &UserTest{Name: "Frank", Password: "p1"}
+	user := &model.User{Name: "Frank", Password: "p1"}
 	mockGetJSON(c, *user)
 
 	lc.Login(c)
@@ -59,17 +60,17 @@ func TestValidLogin(t *testing.T) {
 	}
 }
 
-func createURLValues() []UserTest {
+func createURLValues() []model.User {
 	// Wrong args
-	values1 := &UserTest{}
+	values1 := &model.User{}
 
 	// Only name
-	values2 := &UserTest{Name: "peter"}
+	values2 := &model.User{Name: "peter"}
 
 	// Only password
-	values3 := &UserTest{Password: "pass"}
+	values3 := &model.User{Password: "pass"}
 
-	return []UserTest{*values1, *values2, *values3}
+	return []model.User{*values1, *values2, *values3}
 }
 
 func TestInvalidLogin(t *testing.T) {
