@@ -5,11 +5,15 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/jcasanella/chat_app/repository"
 )
 
 func TestLoginInvalid(t *testing.T) {
 	expected := `{"error":"Invalid user"}`
-	r := NewRouter()
+
+	st := repository.NewMemStorage()
+	r := NewRouter(st)
 	req, _ := http.NewRequest("GET", "/v1/login", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)

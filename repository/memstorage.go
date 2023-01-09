@@ -10,7 +10,7 @@ type MemStorage struct {
 	Users map[string]string
 }
 
-func NewStorage() *MemStorage {
+func NewMemStorage() *MemStorage {
 	ms := &MemStorage{
 		Users: make(map[string]string),
 	}

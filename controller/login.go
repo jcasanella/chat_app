@@ -5,10 +5,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jcasanella/chat_app/model"
+	"github.com/jcasanella/chat_app/repository"
 	"github.com/jcasanella/chat_app/security"
 )
 
-type LoginController struct{}
+type LoginController struct {
+	sDB repository.ServiceDB
+}
+
+func NewLoginController(s repository.ServiceDB) *LoginController {
+	return &LoginController{
+		sDB: s,
+	}
+}
 
 func (lc LoginController) Login(c *gin.Context) {
 	l := model.User{}
