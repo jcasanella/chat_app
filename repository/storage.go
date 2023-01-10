@@ -1,9 +1,7 @@
 package repository
 
-import "github.com/jcasanella/chat_app/model"
-
 type Storage interface {
-	Get(user model.User) (model.User, error)
+	Get(value interface{}) (interface{}, error)
 }
 
 type ServiceDB struct {

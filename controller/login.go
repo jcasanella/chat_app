@@ -5,17 +5,17 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jcasanella/chat_app/model"
-	"github.com/jcasanella/chat_app/repository"
 	"github.com/jcasanella/chat_app/security"
+	"github.com/jcasanella/chat_app/service"
 )
 
 type LoginController struct {
-	sDB repository.ServiceDB
+	uService *service.UserService
 }
 
-func NewLoginController(s repository.ServiceDB) *LoginController {
+func NewLoginController(u *service.UserService) *LoginController {
 	return &LoginController{
-		sDB: s,
+		uService: u,
 	}
 }
 

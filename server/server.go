@@ -7,6 +7,7 @@ import (
 	"github.com/jcasanella/chat_app/config"
 	"github.com/jcasanella/chat_app/controller"
 	"github.com/jcasanella/chat_app/repository"
+	"github.com/jcasanella/chat_app/service"
 )
 
 func NewRouter(s repository.Storage) *gin.Engine {
@@ -17,7 +18,8 @@ func NewRouter(s repository.Storage) *gin.Engine {
 	v1 := router.Group("v1")
 	{
 		sDb := repository.NewServiceDb(s)
-		lc := controller.NewLoginController(*sDb)
+		us := service.NewUserService(sDb)
+		lc := controller.NewLoginController(us)
 		v1.GET("login", lc.Login)
 	}
 
