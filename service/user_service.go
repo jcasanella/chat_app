@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/jcasanella/chat_app/model"
 	"github.com/jcasanella/chat_app/repository"
 )
@@ -15,15 +17,12 @@ func NewUserService(rsDb *repository.ServiceDB) *UserService {
 	}
 }
 
-func (u UserService) Get(user model.User) {
-	p, err := u.s.MyDB.Get(user.Name)
-	if err != nil {
-
+func (u UserService) Get(user model.User) (*model.User, error) {
+	if p, err := u.s.MyDB.Get(user.Name); err != nil {
+		return nil, err
+	} else if p == user.Password {
+		return &user, nil
 	} else {
-		if p == user.Password {
-
-		} else {
-
-		}
+		return nil, fmt.Errorf("error invalid password")
 	}
 }

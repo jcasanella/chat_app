@@ -20,7 +20,7 @@ func NewMemStorage() MemStorage {
 func (m MemStorage) Get(key string) (string, error) {
 	p := m.Users[key]
 	if p == "" {
-		return "", fmt.Errorf("error User does not exists")
+		return "", fmt.Errorf("error user does not exists")
 	}
 
 	return p, nil

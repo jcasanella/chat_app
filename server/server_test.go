@@ -10,7 +10,7 @@ import (
 )
 
 func TestLoginInvalid(t *testing.T) {
-	expected := `{"error":"Invalid user"}`
+	expected := `{"error":"invalid request"}`
 
 	st := repository.NewMemStorage()
 	s := NewServer(st)

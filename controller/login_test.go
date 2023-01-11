@@ -12,6 +12,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jcasanella/chat_app/model"
+	"github.com/jcasanella/chat_app/repository"
+	"github.com/jcasanella/chat_app/service"
 )
 
 func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
@@ -37,15 +39,21 @@ func mockGetJSON(c *gin.Context, user model.User) {
 	c.Request.Body = io.NopCloser(bytes.NewBuffer(b))
 }
 
+func initUserService() *service.UserService {
+	st := repository.NewMemStorage()
+	db := repository.NewServiceDb(st)
+	return service.NewUserService(db)
+}
+
 func TestValidLogin(t *testing.T) {
 	expected := `{"token":`
 
-	lc := new(LoginController)
+	us := initUserService()
+	lc := NewLoginController(us)
 	w := httptest.NewRecorder()
-
 	c := getTestContext(w)
 
-	user := &model.User{Name: "Frank", Password: "p1"}
+	user := &model.User{Name: "admin", Password: "password"}
 	mockGetJSON(c, *user)
 
 	lc.Login(c)
@@ -74,12 +82,12 @@ func createURLValues() []model.User {
 }
 
 func TestInvalidLogin(t *testing.T) {
-	expected := `{"error":"Invalid user"}`
+	expected := `{"error":"Key:`
 
 	for _, v := range createURLValues() {
-		lc := new(LoginController)
+		us := initUserService()
+		lc := NewLoginController(us)
 		w := httptest.NewRecorder()
-
 		c := getTestContext(w)
 
 		mockGetJSON(c, v)
@@ -87,7 +95,8 @@ func TestInvalidLogin(t *testing.T) {
 		lc.Login(c)
 
 		resp, _ := io.ReadAll(w.Body)
-		if string(resp) != expected {
+		s := string(resp)
+		if !strings.Contains(s, expected) {
 			t.Errorf("Login() --> Actual response: %s Expected response: %s", string(resp), expected)
 		}
 		if w.Code != http.StatusBadRequest {
