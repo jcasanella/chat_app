@@ -11,6 +11,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jcasanella/chat_app/model"
+	"github.com/jcasanella/chat_app/repository"
+	"github.com/jcasanella/chat_app/service"
 )
 
 func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
@@ -28,7 +31,7 @@ func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
 	return ctx
 }
 
-func mockGetJSON(c *gin.Context, user UserTest) {
+func mockGetJSON(c *gin.Context, user model.User) {
 	c.Request.Method = "GET"
 	c.Request.Header.Set("Content-Type", "application/json")
 
@@ -36,15 +39,21 @@ func mockGetJSON(c *gin.Context, user UserTest) {
 	c.Request.Body = io.NopCloser(bytes.NewBuffer(b))
 }
 
+func initUserService() *service.UserService {
+	st := repository.NewMemStorage()
+	db := repository.NewServiceDb(st)
+	return service.NewUserService(db)
+}
+
 func TestValidLogin(t *testing.T) {
 	expected := `{"token":`
 
-	lc := new(LoginController)
+	us := initUserService()
+	lc := NewLoginController(us)
 	w := httptest.NewRecorder()
-
 	c := getTestContext(w)
 
-	user := &UserTest{Name: "Frank", Password: "p1"}
+	user := &model.User{Name: "admin", Password: "password"}
 	mockGetJSON(c, *user)
 
 	lc.Login(c)
@@ -59,26 +68,26 @@ func TestValidLogin(t *testing.T) {
 	}
 }
 
-func createURLValues() []UserTest {
+func createURLValues() []model.User {
 	// Wrong args
-	values1 := &UserTest{}
+	values1 := &model.User{}
 
 	// Only name
-	values2 := &UserTest{Name: "peter"}
+	values2 := &model.User{Name: "peter"}
 
 	// Only password
-	values3 := &UserTest{Password: "pass"}
+	values3 := &model.User{Password: "pass"}
 
-	return []UserTest{*values1, *values2, *values3}
+	return []model.User{*values1, *values2, *values3}
 }
 
 func TestInvalidLogin(t *testing.T) {
-	expected := `{"error":"Invalid user"}`
+	expected := `{"error":"Key:`
 
 	for _, v := range createURLValues() {
-		lc := new(LoginController)
+		us := initUserService()
+		lc := NewLoginController(us)
 		w := httptest.NewRecorder()
-
 		c := getTestContext(w)
 
 		mockGetJSON(c, v)
@@ -86,7 +95,8 @@ func TestInvalidLogin(t *testing.T) {
 		lc.Login(c)
 
 		resp, _ := io.ReadAll(w.Body)
-		if string(resp) != expected {
+		s := string(resp)
+		if !strings.Contains(s, expected) {
 			t.Errorf("Login() --> Actual response: %s Expected response: %s", string(resp), expected)
 		}
 		if w.Code != http.StatusBadRequest {
