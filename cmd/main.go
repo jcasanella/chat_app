@@ -9,11 +9,9 @@ import (
 
 func main() {
 	security.Init(64)
-
-	// Init database
-	st := repository.NewMemStorage()
-	repository.NewServiceDb(st)
-
 	config.Init("local")
-	server.Init()
+
+	st := repository.NewMemStorage()
+	s := server.NewServer(st)
+	s.StartServer()
 }

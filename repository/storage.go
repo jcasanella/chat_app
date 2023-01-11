@@ -1,7 +1,7 @@
 package repository
 
 type Storage interface {
-	Get(value interface{}) (interface{}, error)
+	Get(value string) (string, error)
 }
 
 type ServiceDB struct {

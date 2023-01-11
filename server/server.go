@@ -10,24 +10,34 @@ import (
 	"github.com/jcasanella/chat_app/service"
 )
 
-func NewRouter(s repository.Storage) *gin.Engine {
+type Server struct {
+	UserService *service.UserService
+}
+
+func NewServer(storage repository.Storage) *Server {
+	db := repository.NewServiceDb(storage)
+
+	return &Server{
+		UserService: service.NewUserService(db),
+	}
+}
+
+func (s Server) newRouter() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
 	v1 := router.Group("v1")
 	{
-		sDb := repository.NewServiceDb(s)
-		us := service.NewUserService(sDb)
-		lc := controller.NewLoginController(us)
+		lc := controller.NewLoginController(s.UserService)
 		v1.GET("login", lc.Login)
 	}
 
 	return router
 }
 
-func Init(s repository.Storage) {
+func (s Server) StartServer() {
 	config := config.GetConfig()
-	r := NewRouter(s)
+	r := s.newRouter()
 	r.Run(fmt.Sprintf(":%s", config.GetString("port")))
 }

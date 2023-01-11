@@ -13,7 +13,8 @@ func TestLoginInvalid(t *testing.T) {
 	expected := `{"error":"Invalid user"}`
 
 	st := repository.NewMemStorage()
-	r := NewRouter(st)
+	s := NewServer(st)
+	r := s.newRouter()
 	req, _ := http.NewRequest("GET", "/v1/login", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
