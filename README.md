@@ -2,6 +2,8 @@
 
 [![codecov](https://codecov.io/gh/jcasanella/chat_app/branch/main/graph/badge.svg?token=VIU7H2NELQ)](https://codecov.io/gh/jcasanella/chat_app)
 
+[![Build and Test](https://github.com/jcasanella/chat_app/actions/workflows/build_test_main.yaml/badge.svg)](https://github.com/jcasanella/chat_app/actions/workflows/build_test_main.yaml)
+
 The purpose of this project is to write a Chat Application using Golang and React. 
 
 ## Architecture 
