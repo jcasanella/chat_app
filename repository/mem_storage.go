@@ -2,6 +2,8 @@ package repository
 
 import (
 	"fmt"
+
+	"github.com/jcasanella/chat_app/model"
 )
 
 type MemStorage struct {
@@ -17,11 +19,11 @@ func NewMemStorage() MemStorage {
 	return ms
 }
 
-func (m MemStorage) Get(key string) (string, error) {
+func (m MemStorage) Get(key string, password string) (*model.User, error) {
 	p := m.Users[key]
 	if p == "" {
-		return "", fmt.Errorf("error user does not exists")
+		return nil, fmt.Errorf("error user does not exists")
 	}
 
-	return p, nil
+	return &model.User{Name: key, Password: password}, nil
 }

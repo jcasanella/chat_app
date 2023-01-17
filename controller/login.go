@@ -24,7 +24,7 @@ func (lc LoginController) Login(c *gin.Context) {
 	if err := c.BindJSON(&l); err != nil {
 		printError(c, err)
 	} else {
-		if _, err := lc.uService.Get(l); err != nil {
+		if _, err := lc.uService.GetUser(l); err != nil {
 			printError(c, err)
 		}
 
