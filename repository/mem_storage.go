@@ -28,7 +28,7 @@ func (m MemStorage) Get(key string, password string) (*model.User, error) {
 	return &model.User{Name: key, Password: password}, nil
 }
 
-func (m *MemStorage) Add(key string, password string) (*model.User, error) {
+func (m MemStorage) Add(key string, password string) (*model.User, error) {
 	p := m.Users[key]
 	if p != "" {
 		return nil, fmt.Errorf("error user exists")

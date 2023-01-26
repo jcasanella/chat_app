@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/jcasanella/chat_app/model"
 	"github.com/jcasanella/chat_app/repository"
 	"github.com/jcasanella/chat_app/service"
@@ -68,15 +69,18 @@ func TestValidLogin(t *testing.T) {
 	}
 }
 
-func createURLValues() []model.User {
-	// Wrong args
-	values1 := &model.User{}
+func createWrongUsers() []model.User {
+	values1 := &model.User{}                 // Wrong args
+	values2 := &model.User{Name: "peter"}    // Only name
+	values3 := &model.User{Password: "pass"} // Only password
 
-	// Only name
-	values2 := &model.User{Name: "peter"}
+	return []model.User{*values1, *values2, *values3}
+}
 
-	// Only password
-	values3 := &model.User{Password: "pass"}
+func createValidUsers() []model.User {
+	values1 := &model.User{Name: "peter1", Password: "peter1_password"}
+	values2 := &model.User{Name: "peter2", Password: "peter2_password"}
+	values3 := &model.User{Name: "peter3", Password: "peter3_password"}
 
 	return []model.User{*values1, *values2, *values3}
 }
@@ -84,7 +88,7 @@ func createURLValues() []model.User {
 func TestInvalidLogin(t *testing.T) {
 	expected := `{"error":"Key:`
 
-	for _, v := range createURLValues() {
+	for _, v := range createWrongUsers() {
 		us := initUserService()
 		lc := NewLoginController(us)
 		w := httptest.NewRecorder()
@@ -101,6 +105,38 @@ func TestInvalidLogin(t *testing.T) {
 		}
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Login() --> Actual status code: %v Expected status code: %v", w.Code, http.StatusBadRequest)
+		}
+	}
+}
+
+func mockPostJSON(c *gin.Context, user model.User) {
+	c.Request.Method = "POST"
+	c.Request.Header.Set("Content-Type", "application/json")
+
+	b, _ := json.Marshal(user)
+	c.Request.Body = io.NopCloser(bytes.NewBuffer(b))
+}
+
+func TestValidRegister(t *testing.T) {
+	for _, v := range createValidUsers() {
+		us := initUserService()
+		lc := NewLoginController(us)
+		w := httptest.NewRecorder()
+		c := getTestContext(w)
+
+		mockGetJSON(c, v)
+		lc.Register(c)
+
+		resp, _ := io.ReadAll(w.Body)
+		s := string(resp)
+
+		b, _ := json.Marshal(v)
+		expected := string(b)
+		if s != expected {
+			t.Errorf("Register() --> Actual response: %s Expected response: %s", s, expected)
+		}
+		if w.Code != http.StatusCreated {
+			t.Errorf("Register() --> Actual status code: %v Expected status code: %v", w.Code, http.StatusCreated)
 		}
 	}
 }
