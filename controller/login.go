@@ -45,7 +45,7 @@ func (lc LoginController) Register(c *gin.Context) {
 		if _, err := lc.uService.AddUser(u); err != nil {
 			printError(c, err)
 		} else {
-			c.IndentedJSON(http.StatusOK, u)
+			c.IndentedJSON(http.StatusCreated, u)
 		}
 	}
 }
