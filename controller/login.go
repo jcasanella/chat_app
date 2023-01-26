@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/jcasanella/chat_app/model"
 	"github.com/jcasanella/chat_app/security"
 	"github.com/jcasanella/chat_app/service"
@@ -32,6 +33,19 @@ func (lc LoginController) Login(c *gin.Context) {
 			printError(c, err)
 		} else {
 			c.JSON(http.StatusOK, gin.H{"token": sig})
+		}
+	}
+}
+
+func (lc LoginController) Register(c *gin.Context) {
+	u := model.User{}
+	if err := c.BindJSON(&u); err != nil {
+		printError(c, err)
+	} else {
+		if _, err := lc.uService.AddUser(u); err != nil {
+			printError(c, err)
+		} else {
+			c.IndentedJSON(http.StatusOK, u)
 		}
 	}
 }
