@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/jcasanella/chat_app/config"
 	"github.com/jcasanella/chat_app/controller"
 	"github.com/jcasanella/chat_app/repository"
@@ -31,6 +32,7 @@ func (s Server) newRouter() *gin.Engine {
 	{
 		lc := controller.NewLoginController(s.UserService)
 		v1.GET("login", lc.Login)
+		v1.POST("register", lc.Register)
 	}
 
 	return router

@@ -15,8 +15,16 @@ func NewUserService(rsDb *repository.ServiceDB) *UserService {
 	}
 }
 
-func (u UserService) GetUser(user model.User) (*model.User, error) {
-	if p, err := u.s.MyDB.Get(user.Name, user.Password); err != nil {
+func (us UserService) GetUser(user model.User) (*model.User, error) {
+	if p, err := us.s.MyDB.Get(user.Name, user.Password); err != nil {
+		return nil, err
+	} else {
+		return p, nil
+	}
+}
+
+func (us *UserService) AddUser(user model.User) (*model.User, error) {
+	if p, err := us.s.MyDB.Add(user.Name, user.Password); err != nil {
 		return nil, err
 	} else {
 		return p, nil
