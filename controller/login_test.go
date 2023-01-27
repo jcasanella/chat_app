@@ -69,7 +69,7 @@ func TestValidLogin(t *testing.T) {
 	}
 }
 
-func createWrongUsers() []model.User {
+func createInvalidUsers() []model.User {
 	values1 := &model.User{}                 // Wrong args
 	values2 := &model.User{Name: "peter"}    // Only name
 	values3 := &model.User{Password: "pass"} // Only password
@@ -88,7 +88,7 @@ func createValidUsers() []model.User {
 func TestInvalidLogin(t *testing.T) {
 	expected := `{"error":"Key:`
 
-	for _, v := range createWrongUsers() {
+	for _, v := range createInvalidUsers() {
 		us := initUserService()
 		lc := NewLoginController(us)
 		w := httptest.NewRecorder()
@@ -124,7 +124,7 @@ func TestValidRegister(t *testing.T) {
 		w := httptest.NewRecorder()
 		c := getTestContext(w)
 
-		mockGetJSON(c, v)
+		mockPostJSON(c, v)
 		lc.Register(c)
 
 		resp, _ := io.ReadAll(w.Body)
@@ -137,6 +137,30 @@ func TestValidRegister(t *testing.T) {
 		}
 		if w.Code != http.StatusCreated {
 			t.Errorf("Register() --> Actual status code: %v Expected status code: %v", w.Code, http.StatusCreated)
+		}
+	}
+}
+
+func TestInvalidRegister(t *testing.T) {
+	expected := `{"error":"Key:`
+
+	for _, v := range createInvalidUsers() {
+		us := initUserService()
+		lc := NewLoginController(us)
+		w := httptest.NewRecorder()
+		c := getTestContext(w)
+
+		mockPostJSON(c, v)
+		lc.Register(c)
+
+		resp, _ := io.ReadAll(w.Body)
+		s := string(resp)
+
+		if !strings.Contains(s, expected) {
+			t.Errorf("Register() --> Actual response: %s Expected response: %s", string(resp), expected)
+		}
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("Register() --> Actual status code: %v Expected status code: %v", w.Code, http.StatusBadRequest)
 		}
 	}
 }
