@@ -32,8 +32,8 @@ func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
 	return ctx
 }
 
-func mockGetJSON(c *gin.Context, user model.User) {
-	c.Request.Method = "GET"
+func mockBodyJson(c *gin.Context, user model.User, method string) {
+	c.Request.Method = method
 	c.Request.Header.Set("Content-Type", "application/json")
 
 	b, _ := json.Marshal(user)
@@ -51,11 +51,12 @@ func TestValidLogin(t *testing.T) {
 
 	us := initUserService()
 	lc := NewLoginController(us)
+
 	w := httptest.NewRecorder()
 	c := getTestContext(w)
 
 	user := &model.User{Name: "admin", Password: "password"}
-	mockGetJSON(c, *user)
+	mockBodyJson(c, *user, "GET")
 
 	lc.Login(c)
 
@@ -77,24 +78,17 @@ func createInvalidUsers() []model.User {
 	return []model.User{*values1, *values2, *values3}
 }
 
-func createValidUsers() []model.User {
-	values1 := &model.User{Name: "peter1", Password: "peter1_password"}
-	values2 := &model.User{Name: "peter2", Password: "peter2_password"}
-	values3 := &model.User{Name: "peter3", Password: "peter3_password"}
-
-	return []model.User{*values1, *values2, *values3}
-}
-
 func TestInvalidLogin(t *testing.T) {
 	expected := `{"error":"Key:`
 
 	for _, v := range createInvalidUsers() {
 		us := initUserService()
 		lc := NewLoginController(us)
+
 		w := httptest.NewRecorder()
 		c := getTestContext(w)
 
-		mockGetJSON(c, v)
+		mockBodyJson(c, v, "GET")
 
 		lc.Login(c)
 
@@ -109,22 +103,23 @@ func TestInvalidLogin(t *testing.T) {
 	}
 }
 
-func mockPostJSON(c *gin.Context, user model.User) {
-	c.Request.Method = "POST"
-	c.Request.Header.Set("Content-Type", "application/json")
+func createValidUsers() []model.User {
+	values1 := &model.User{Name: "peter1", Password: "peter1_password"}
+	values2 := &model.User{Name: "peter2", Password: "peter2_password"}
+	values3 := &model.User{Name: "peter3", Password: "peter3_password"}
 
-	b, _ := json.Marshal(user)
-	c.Request.Body = io.NopCloser(bytes.NewBuffer(b))
+	return []model.User{*values1, *values2, *values3}
 }
 
 func TestValidRegister(t *testing.T) {
 	for _, v := range createValidUsers() {
 		us := initUserService()
 		lc := NewLoginController(us)
+
 		w := httptest.NewRecorder()
 		c := getTestContext(w)
 
-		mockPostJSON(c, v)
+		mockBodyJson(c, v, "POST")
 		lc.Register(c)
 
 		resp, _ := io.ReadAll(w.Body)
@@ -147,10 +142,11 @@ func TestInvalidRegister(t *testing.T) {
 	for _, v := range createInvalidUsers() {
 		us := initUserService()
 		lc := NewLoginController(us)
+
 		w := httptest.NewRecorder()
 		c := getTestContext(w)
 
-		mockPostJSON(c, v)
+		mockBodyJson(c, v, "POST")
 		lc.Register(c)
 
 		resp, _ := io.ReadAll(w.Body)
