@@ -13,6 +13,7 @@ import (
 
 var SecretKey string
 
+// Init receives length of SecretKey to be generated
 func Init(n int) {
 	var err error
 	SecretKey, err = GenerateRandomString(n)

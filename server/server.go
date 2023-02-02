@@ -17,6 +17,7 @@ type Server struct {
 	UserService *service.UserService
 }
 
+// NewServer receives the Storate object and initialize a Server
 func NewServer(storage repository.Storage) *Server {
 	db := repository.NewServiceDb(storage)
 
@@ -55,6 +56,7 @@ func (s Server) newRouter() *gin.Engine {
 	return router
 }
 
+// StartServer starts the server in the port indicated in the config file
 func (s Server) StartServer() {
 	config := config.GetConfig()
 	r := s.newRouter()
