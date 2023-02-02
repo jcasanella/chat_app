@@ -21,7 +21,7 @@ func Init(env string) {
 	}
 }
 
-// Return viper object, contains the App configuration
+// GetConfig returns a Viper object
 func GetConfig() *viper.Viper {
 	return config
 }

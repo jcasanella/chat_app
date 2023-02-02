@@ -9,12 +9,14 @@ type UserService struct {
 	s *repository.ServiceDB
 }
 
+// NewUserService initialize an UserService
 func NewUserService(rsDb *repository.ServiceDB) *UserService {
 	return &UserService{
 		s: rsDb,
 	}
 }
 
+// GetUser receives an user and look for the existence of this user, if exists return the user, otherwise error
 func (us UserService) GetUser(user model.User) (*model.User, error) {
 	if p, err := us.s.MyDB.Get(user.Name, user.Password); err != nil {
 		return nil, err

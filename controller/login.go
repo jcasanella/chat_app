@@ -14,7 +14,7 @@ type LoginController struct {
 	uService *service.UserService
 }
 
-// Init the LoginController
+// NewLoginController initialize the LoginController
 func NewLoginController(u *service.UserService) *LoginController {
 	return &LoginController{
 		uService: u,
