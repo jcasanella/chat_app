@@ -14,12 +14,14 @@ type LoginController struct {
 	uService *service.UserService
 }
 
+// NewLoginController initialize the LoginController
 func NewLoginController(u *service.UserService) *LoginController {
 	return &LoginController{
 		uService: u,
 	}
 }
 
+// Login an user, returns error if user can not log in, otherwise return the JWT
 func (lc LoginController) Login(c *gin.Context) {
 	l := model.User{}
 	if err := c.BindJSON(&l); err != nil {
@@ -37,6 +39,7 @@ func (lc LoginController) Login(c *gin.Context) {
 	}
 }
 
+// Register an unexisting user, return the user if it's created, otherwise return an error
 func (lc LoginController) Register(c *gin.Context) {
 	u := model.User{}
 	if err := c.BindJSON(&u); err != nil {

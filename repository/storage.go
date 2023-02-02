@@ -11,6 +11,7 @@ type ServiceDB struct {
 	MyDB Storage
 }
 
+// NewServiceDb initialize a ServiceDb
 func NewServiceDb(db Storage) *ServiceDB {
 	return &ServiceDB{
 		MyDB: db,

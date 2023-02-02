@@ -2,6 +2,8 @@ package server
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 
@@ -15,6 +17,7 @@ type Server struct {
 	UserService *service.UserService
 }
 
+// NewServer receives the Storate object and initialize a Server
 func NewServer(storage repository.Storage) *Server {
 	db := repository.NewServiceDb(storage)
 
@@ -23,10 +26,25 @@ func NewServer(storage repository.Storage) *Server {
 	}
 }
 
+func getTemplatesFolder() string {
+	templates := "./templates"
+	if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
+		return "./../templates"
+	}
+
+	return templates
+}
+
 func (s Server) newRouter() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+
+	templatesFolder := getTemplatesFolder()
+	router.LoadHTMLGlob(fmt.Sprintf("%s/*.html", templatesFolder))
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "index.html", gin.H{"content": "This is the index page"})
+	})
 
 	v1 := router.Group("v1")
 	{
@@ -38,6 +56,7 @@ func (s Server) newRouter() *gin.Engine {
 	return router
 }
 
+// StartServer starts the server in the port indicated in the config file
 func (s Server) StartServer() {
 	config := config.GetConfig()
 	r := s.newRouter()

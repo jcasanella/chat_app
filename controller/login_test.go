@@ -32,7 +32,7 @@ func getTestContext(w *httptest.ResponseRecorder) *gin.Context {
 	return ctx
 }
 
-func mockBodyJson(c *gin.Context, user model.User, method string) {
+func mockBody(c *gin.Context, user model.User, method string) {
 	c.Request.Method = method
 	c.Request.Header.Set("Content-Type", "application/json")
 
@@ -56,7 +56,7 @@ func TestValidLogin(t *testing.T) {
 	c := getTestContext(w)
 
 	user := &model.User{Name: "admin", Password: "password"}
-	mockBodyJson(c, *user, "GET")
+	mockBody(c, *user, "GET")
 
 	lc.Login(c)
 
@@ -88,7 +88,7 @@ func TestInvalidLogin(t *testing.T) {
 		w := httptest.NewRecorder()
 		c := getTestContext(w)
 
-		mockBodyJson(c, v, "GET")
+		mockBody(c, v, "GET")
 
 		lc.Login(c)
 
@@ -119,7 +119,7 @@ func TestValidRegister(t *testing.T) {
 		w := httptest.NewRecorder()
 		c := getTestContext(w)
 
-		mockBodyJson(c, v, "POST")
+		mockBody(c, v, "POST")
 		lc.Register(c)
 
 		resp, _ := io.ReadAll(w.Body)
@@ -146,7 +146,7 @@ func TestInvalidRegister(t *testing.T) {
 		w := httptest.NewRecorder()
 		c := getTestContext(w)
 
-		mockBodyJson(c, v, "POST")
+		mockBody(c, v, "POST")
 		lc.Register(c)
 
 		resp, _ := io.ReadAll(w.Body)

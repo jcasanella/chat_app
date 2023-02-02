@@ -13,6 +13,7 @@ import (
 
 var SecretKey string
 
+// Init receives length of SecretKey to be generated
 func Init(n int) {
 	var err error
 	SecretKey, err = GenerateRandomString(n)
@@ -21,8 +22,7 @@ func Init(n int) {
 	}
 }
 
-// Generate a securely random string
-// Will return an error, if can not be generated
+// GenerateRandomString receives length of the String to generate, returns the generated string or error in case of failure
 func GenerateRandomString(n int) (string, error) {
 	if n <= 0 {
 		return "", errors.New("invalid length")
@@ -38,6 +38,7 @@ func GenerateRandomString(n int) (string, error) {
 	return string(ret), nil
 }
 
+// GenerateJWT generates a JWT associated to the user, returns the  JWT or error in case of failure
 func GenerateJWT(username string) (tokenString string, err error) {
 	claims := model.UserClaims{
 		Name: username,

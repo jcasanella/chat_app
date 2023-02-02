@@ -8,6 +8,7 @@ import (
 
 var config *viper.Viper
 
+// Init viper library with location of the config file
 func Init(env string) {
 	config = viper.New()
 	config.SetConfigType("yaml")
@@ -20,6 +21,7 @@ func Init(env string) {
 	}
 }
 
+// GetConfig returns a Viper object
 func GetConfig() *viper.Viper {
 	return config
 }
