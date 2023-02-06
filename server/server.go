@@ -28,7 +28,7 @@ func NewServer(storage repository.Storage) *Server {
 
 func getTemplatesFolder() string {
 	templates := "./templates"
-	if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
+	if _, err := os.Stat(templates); os.IsNotExist(err) {
 		return "./../templates"
 	}
 
@@ -40,6 +40,7 @@ func (s Server) newRouter() *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
+	router.Static("/static", "./static")
 	templatesFolder := getTemplatesFolder()
 	router.LoadHTMLGlob(fmt.Sprintf("%s/*.html", templatesFolder))
 	router.GET("/", func(ctx *gin.Context) {
