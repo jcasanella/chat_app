@@ -1,0 +1,7 @@
+body {
+    background-color: lightblue;
+}
+
+.left img {
+    float: right;
+}
